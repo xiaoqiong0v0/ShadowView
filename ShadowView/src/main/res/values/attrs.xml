@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--shadow start -->
+    <attr name="shadow_color" format="color" />
+    <attr name="shadow_dx" format="dimension" />
+    <attr name="shadow_dy" format="dimension" />
+    <attr name="shadow_blur" format="dimension" />
+    <!--    阴影张度-->
+    <attr name="shadow_spread" format="dimension" />
+    <!--    内阴影-->
+    <attr name="shadow_inset" format="boolean" />
+    <attr name="shadow_type" format="enum">
+        <enum name="soft" value="0" />
+        <enum name="hard" value="1" />
+    </attr>
+    <attr name="box_radius" format="dimension" />
+    <attr name="box_radius_left_top" format="dimension" />
+    <attr name="box_radius_right_top" format="dimension" />
+    <attr name="box_radius_right_bottom" format="dimension" />
+    <attr name="box_radius_left_bottom" format="dimension" />
+    <attr name="box_border_thickness" format="dimension" />
+    <attr name="box_border_color" format="color" />
+    <attr name="box_border_type" format="enum">
+        <enum name="solid" value="0" />
+        <enum name="dashed" value="1" />
+    </attr>
+    <!--    阴影下层颜色 设置非透明可以提升性能-->
+    <attr name="under_color" format="color" />、
+    <!--    自动添加 padding 仅外阴影  默认 true 否则布局参数不变 阴影绘制在内部 -->
+    <attr name="auto_add_padding" format="boolean" />
+    <!--    阴影自动转换宽高  仅外阴影 如果设置自动 margin 先使用margin 方便布局 意在尽量保持设置的宽高为可见宽高 -->
+    <attr name="auto_add_width_height" format="boolean" />
+    <!--    阴影自动占用  仅外阴影 margin 优先自动调整宽高 方便布局 意在尽量保持设置的宽高为可见宽高 -->
+    <attr name="auto_del_margin" format="boolean" />
+    <!--shadow end -->
+    <declare-styleable name="ShadowView">
+        <attr name="shadow_color" />
+        <attr name="shadow_dx" />
+        <attr name="shadow_dy" />
+        <attr name="shadow_blur" />
+        <attr name="shadow_spread" />
+        <attr name="shadow_inset" />
+        <attr name="shadow_type" />
+        <attr name="box_radius" />
+        <attr name="box_radius_left_top" />
+        <attr name="box_radius_right_top" />
+        <attr name="box_radius_right_bottom" />
+        <attr name="box_radius_left_bottom" />
+        <attr name="box_border_thickness" />
+        <attr name="box_border_color" />
+        <attr name="box_border_type" />
+        <attr name="under_color" />
+        <attr name="auto_add_padding" />
+        <attr name="auto_add_width_height" />
+        <attr name="auto_del_margin" />
+    </declare-styleable>
+    <declare-styleable name="ShadowFrameLayout">
+        <attr name="shadow_color" />
+        <attr name="shadow_dx" />
+        <attr name="shadow_dy" />
+        <attr name="shadow_blur" />
+        <attr name="shadow_spread" />
+        <attr name="shadow_inset" />
+        <attr name="box_radius" />
+        <attr name="box_radius_left_top" />
+        <attr name="box_radius_right_top" />
+        <attr name="box_radius_right_bottom" />
+        <attr name="box_radius_left_bottom" />
+        <attr name="box_border_thickness" />
+        <attr name="box_border_color" />
+        <attr name="box_border_type" />
+        <attr name="under_color" />
+        <attr name="auto_add_padding" />
+        <attr name="auto_add_width_height" />
+        <attr name="auto_del_margin" />
+    </declare-styleable>
+    <declare-styleable name="ShadowLinearLayout">
+        <attr name="shadow_color" />
+        <attr name="shadow_dx" />
+        <attr name="shadow_dy" />
+        <attr name="shadow_blur" />
+        <attr name="shadow_spread" />
+        <attr name="shadow_inset" />
+        <attr name="box_radius" />
+        <attr name="box_radius_left_top" />
+        <attr name="box_radius_right_top" />
+        <attr name="box_radius_right_bottom" />
+        <attr name="box_radius_left_bottom" />
+        <attr name="box_border_thickness" />
+        <attr name="box_border_color" />
+        <attr name="box_border_type" />
+        <attr name="under_color" />
+        <attr name="auto_add_padding" />
+        <attr name="auto_add_width_height" />
+        <attr name="auto_del_margin" />
+    </declare-styleable>
+    <declare-styleable name="ShadowRelativeLayout">
+        <attr name="shadow_color" />
+        <attr name="shadow_dx" />
+        <attr name="shadow_dy" />
+        <attr name="shadow_blur" />
+        <attr name="shadow_spread" />
+        <attr name="shadow_inset" />
+        <attr name="box_radius" />
+        <attr name="box_radius_left_top" />
+        <attr name="box_radius_right_top" />
+        <attr name="box_radius_right_bottom" />
+        <attr name="box_radius_left_bottom" />
+        <attr name="box_border_thickness" />
+        <attr name="box_border_color" />
+        <attr name="box_border_type" />
+        <attr name="under_color" />
+        <attr name="auto_add_padding" />
+        <attr name="auto_add_width_height" />
+        <attr name="auto_del_margin" />
+    </declare-styleable>
+    <declare-styleable name="ShadowRecyclerView">
+        <attr name="shadow_color" />
+        <attr name="shadow_dx" />
+        <attr name="shadow_dy" />
+        <attr name="shadow_blur" />
+        <attr name="shadow_spread" />
+        <attr name="shadow_inset" />
+        <attr name="box_radius" />
+        <attr name="box_radius_left_top" />
+        <attr name="box_radius_right_top" />
+        <attr name="box_radius_right_bottom" />
+        <attr name="box_radius_left_bottom" />
+        <attr name="box_border_thickness" />
+        <attr name="box_border_color" />
+        <attr name="box_border_type" />
+        <attr name="under_color" />
+        <attr name="auto_add_padding" />
+        <attr name="auto_add_width_height" />
+        <attr name="auto_del_margin" />
+    </declare-styleable>
+    <declare-styleable name="ShadowTextView">
+        <attr name="shadow_color" />
+        <attr name="shadow_dx" />
+        <attr name="shadow_dy" />
+        <attr name="shadow_blur" />
+        <attr name="shadow_spread" />
+        <attr name="shadow_inset" />
+        <attr name="box_radius" />
+        <attr name="box_radius_left_top" />
+        <attr name="box_radius_right_top" />
+        <attr name="box_radius_right_bottom" />
+        <attr name="box_radius_left_bottom" />
+        <attr name="box_border_thickness" />
+        <attr name="box_border_color" />
+        <attr name="box_border_type" />
+        <attr name="under_color" />
+        <attr name="auto_add_padding" />
+        <attr name="auto_add_width_height" />
+        <attr name="auto_del_margin" />
+    </declare-styleable>
+    <declare-styleable name="ShadowEditText">
+        <attr name="shadow_color" />
+        <attr name="shadow_dx" />
+        <attr name="shadow_dy" />
+        <attr name="shadow_blur" />
+        <attr name="shadow_spread" />
+        <attr name="shadow_inset" />
+        <attr name="box_radius" />
+        <attr name="box_radius_left_top" />
+        <attr name="box_radius_right_top" />
+        <attr name="box_radius_right_bottom" />
+        <attr name="box_radius_left_bottom" />
+        <attr name="box_border_thickness" />
+        <attr name="box_border_color" />
+        <attr name="box_border_type" />
+        <attr name="under_color" />
+        <attr name="auto_add_padding" />
+        <attr name="auto_add_width_height" />
+        <attr name="auto_del_margin" />
+    </declare-styleable>
+    <declare-styleable name="ShadowImageView">
+        <attr name="shadow_color" />
+        <attr name="shadow_dx" />
+        <attr name="shadow_dy" />
+        <attr name="shadow_blur" />
+        <attr name="shadow_spread" />
+        <attr name="shadow_inset" />
+        <attr name="box_radius" />
+        <attr name="box_radius_left_top" />
+        <attr name="box_radius_right_top" />
+        <attr name="box_radius_right_bottom" />
+        <attr name="box_radius_left_bottom" />
+        <attr name="box_border_thickness" />
+        <attr name="box_border_color" />
+        <attr name="box_border_type" />
+        <attr name="under_color" />
+        <attr name="auto_add_padding" />
+        <attr name="auto_add_width_height" />
+        <attr name="auto_del_margin" />
+    </declare-styleable>
+</resources>

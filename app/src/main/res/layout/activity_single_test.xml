@@ -10,9 +10,11 @@
     <com.github.xiaogqiong0v0.shadowview.ShadowView
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_margin="20dp"
+        android:layout_margin="50dp"
         android:background="#FF0000"
         app:shadow_blur="10dp"
         app:shadow_color="#0000FF"
-        app:shadow_inset="true" />
+        app:shadow_dx="10dp"
+        app:shadow_dy="10dp"
+        app:auto_del_margin="true"/>
 </LinearLayout>

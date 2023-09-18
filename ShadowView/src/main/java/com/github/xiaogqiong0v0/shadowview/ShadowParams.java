@@ -204,17 +204,10 @@ public class ShadowParams {
         attr.recycle();
         //
         savedLayerType = view.getLayerType();
-        final ThemeAttrs themeAttrs = new ThemeAttrs(context.getTheme());
-        savedPaddings = new Rect(themeAttrs.getDimensionPixelSize(android.R.attr.paddingLeft),
-                themeAttrs.getDimensionPixelSize(android.R.attr.paddingTop),
-                themeAttrs.getDimensionPixelSize(android.R.attr.paddingRight),
-                themeAttrs.getDimensionPixelSize(android.R.attr.paddingBottom));
-        savedMargins = new Rect(themeAttrs.getDimensionPixelSize(android.R.attr.layout_marginLeft),
-                themeAttrs.getDimensionPixelSize(android.R.attr.layout_marginTop),
-                themeAttrs.getDimensionPixelSize(android.R.attr.layout_marginRight),
-                themeAttrs.getDimensionPixelSize(android.R.attr.layout_marginBottom));
-        savedWidthHeight = new Size(themeAttrs.getDimensionPixelSize(android.R.attr.layout_width),
-                themeAttrs.getDimensionPixelSize(android.R.attr.layout_height));
+        ViewGroup.MarginLayoutParams params = new ViewGroup.MarginLayoutParams(view.getContext(), attrs);
+        savedPaddings = new Rect(view.getPaddingLeft(), view.getPaddingTop(), view.getPaddingRight(), view.getPaddingBottom());
+        savedMargins = new Rect(params.leftMargin, params.topMargin, params.rightMargin, params.bottomMargin);
+        savedWidthHeight = new Size(params.width, params.height);
         init();
     }
 

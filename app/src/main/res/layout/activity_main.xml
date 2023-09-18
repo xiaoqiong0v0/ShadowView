@@ -10,30 +10,27 @@
     <GridLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:columnCount="8">
+        android:columnCount="5">
+
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_columnSpan="5"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_first_test"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="单个测试"
+                tools:ignore="HardcodedText" />
+        </LinearLayout>
 
         <com.github.xiaogqiong0v0.shadowview.ShadowView
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_margin="20dp"
             android:background="#FF0000"
-            app:box_radius="10dp"
-            app:shadow_blur="10dp"
-            app:shadow_color="#0000FF"
-            app:shadow_spread="5dp" />
-
-        <com.github.xiaogqiong0v0.shadowview.ShadowView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_margin="20dp"
-            android:background="#FF0000" />
-
-        <com.github.xiaogqiong0v0.shadowview.ShadowView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_margin="20dp"
-            android:background="#FF0000"
-            app:box_radius="10dp" />
+            app:box_radius="20dp" />
 
         <com.github.xiaogqiong0v0.shadowview.ShadowView
             android:layout_width="100dp"
@@ -41,7 +38,7 @@
             android:layout_margin="20dp"
             android:background="#FF0000"
             app:box_border_color="#00FF00"
-            app:box_radius="10dp"
+            app:box_radius="20dp"
             app:under_color="#DDDDDD" />
 
         <com.github.xiaogqiong0v0.shadowview.ShadowView
@@ -82,13 +79,7 @@
             android:layout_height="100dp"
             android:layout_margin="20dp"
             android:background="#FF0000"
-            app:box_border_color="#00FF00"
-            app:box_border_thickness="2dp"
-            app:box_border_type="dashed"
-            app:box_radius="10dp"
-            app:box_radius_left_bottom="8dp"
-            app:box_radius_right_bottom="20dp"
-            app:box_radius_right_top="5dp"
+            app:shadow_blur="10dp"
             app:shadow_color="#0000FF" />
 
         <com.github.xiaogqiong0v0.shadowview.ShadowView
@@ -96,9 +87,14 @@
             android:layout_height="100dp"
             android:layout_margin="20dp"
             android:background="#FF0000"
-            app:box_border_color="#00FF00"
-            app:box_border_thickness="2dp"
-            app:box_border_type="dashed"
+            app:shadow_color="#0000FF"
+            app:shadow_spread="5dp" />
+
+        <com.github.xiaogqiong0v0.shadowview.ShadowView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_margin="20dp"
+            android:background="#FF0000"
             app:box_radius="10dp"
             app:box_radius_left_bottom="8dp"
             app:box_radius_right_bottom="20dp"
@@ -111,15 +107,13 @@
             android:layout_height="100dp"
             android:layout_margin="20dp"
             android:background="#FF0000"
-            app:box_border_color="#00FF00"
-            app:box_border_type="dashed"
             app:box_radius="10dp"
             app:box_radius_left_bottom="8dp"
             app:box_radius_right_bottom="20dp"
             app:box_radius_right_top="5dp"
             app:shadow_blur="10dp"
             app:shadow_color="#0000FF"
-            app:shadow_dx="3dp"
+            app:shadow_dx="10dp"
             app:shadow_dy="5dp" />
 
         <com.github.xiaogqiong0v0.shadowview.ShadowView
@@ -127,7 +121,58 @@
             android:layout_height="100dp"
             android:layout_margin="20dp"
             android:background="#FF0000"
+            app:box_radius="10dp"
+            app:box_radius_left_bottom="8dp"
+            app:box_radius_right_bottom="20dp"
+            app:box_radius_right_top="5dp"
+            app:shadow_blur="10dp"
+            app:shadow_color="#0000FF"
+            app:shadow_dx="10dp"
+            app:shadow_dy="5dp"
+            app:shadow_spread="5dp" />
+
+        <com.github.xiaogqiong0v0.shadowview.ShadowView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_margin="20dp"
+            android:background="#FF0000"
             app:box_border_color="#00FF00"
+            app:box_border_thickness="2dp"
+            app:box_radius="10dp"
+            app:box_radius_left_bottom="8dp"
+            app:box_radius_right_bottom="20dp"
+            app:box_radius_right_top="5dp"
+            app:shadow_blur="10dp"
+            app:shadow_color="#0000FF"
+            app:shadow_dx="10dp"
+            app:shadow_dy="5dp"
+            app:shadow_spread="5dp" />
+
+        <com.github.xiaogqiong0v0.shadowview.ShadowView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_margin="20dp"
+            android:background="#FF0000"
+            app:box_border_color="#00FF00"
+            app:box_border_thickness="2dp"
+            app:box_radius="10dp"
+            app:box_radius_left_bottom="8dp"
+            app:box_radius_right_bottom="20dp"
+            app:box_radius_right_top="5dp"
+            app:shadow_blur="10dp"
+            app:shadow_color="#0000FF"
+            app:shadow_dx="10dp"
+            app:shadow_dy="5dp"
+            app:shadow_spread="5dp"
+            app:shadow_type="hard" />
+
+        <com.github.xiaogqiong0v0.shadowview.ShadowView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_margin="20dp"
+            android:background="#FF0000"
+            app:box_border_color="#00FF00"
+            app:box_border_thickness="2dp"
             app:box_border_type="dashed"
             app:box_radius="10dp"
             app:box_radius_left_bottom="8dp"
@@ -144,47 +189,17 @@
             android:layout_margin="20dp"
             android:background="#FF0000"
             app:box_border_color="#00FF00"
+            app:box_border_thickness="2dp"
             app:box_border_type="dashed"
             app:box_radius="10dp"
             app:box_radius_left_bottom="8dp"
-            app:box_radius_right_bottom="20dp"
-            app:box_radius_right_top="5dp"
+            app:box_radius_right_bottom="25dp"
+            app:box_radius_right_top="15dp"
             app:shadow_blur="10dp"
             app:shadow_color="#0000FF"
-            app:shadow_dx="30dp"
-            app:shadow_dy="20dp" />
-
-        <com.github.xiaogqiong0v0.shadowview.ShadowView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_margin="20dp"
-            android:background="#FF0000"
-            app:box_border_color="#00FF00"
-            app:box_border_type="dashed"
-            app:box_radius="10dp"
-            app:box_radius_left_bottom="30dp"
-            app:box_radius_right_bottom="50dp"
-            app:box_radius_right_top="5dp"
-            app:shadow_blur="10dp"
-            app:shadow_color="#0000FF"
-            app:shadow_dx="30dp"
-            app:shadow_dy="20dp" />
-
-        <com.github.xiaogqiong0v0.shadowview.ShadowView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_margin="20dp"
-            android:background="#FF0000"
-            app:box_border_color="#00FF00"
-            app:box_border_type="dashed"
-            app:box_radius="10dp"
-            app:box_radius_left_bottom="8dp"
-            app:box_radius_right_bottom="20dp"
-            app:box_radius_right_top="5dp"
-            app:shadow_blur="10dp"
-            app:shadow_color="#0000FF"
-            app:shadow_dx="110dp"
-            app:shadow_dy="120dp" />
+            app:shadow_dx="-20dp"
+            app:shadow_dy="30dp"
+            app:shadow_type="soft" />
 
         <com.github.xiaogqiong0v0.shadowview.ShadowView
             android:layout_width="100dp"
@@ -193,34 +208,45 @@
             android:background="#FF0000"
             app:box_border_color="#00FF00"
             app:box_border_thickness="2dp"
-            app:box_border_type="solid"
+            app:box_border_type="dashed"
             app:box_radius="10dp"
             app:box_radius_left_bottom="8dp"
             app:box_radius_right_bottom="20dp"
             app:box_radius_right_top="5dp"
             app:shadow_blur="10dp"
             app:shadow_color="#0000FF"
-            app:shadow_dx="3dp"
-            app:shadow_dy="5dp"
-            app:shadow_type="hard" />
+            app:shadow_dx="-20dp"
+            app:shadow_dy="30dp"
+            app:shadow_spread="5dp"
+            app:shadow_type="soft" />
 
         <com.github.xiaogqiong0v0.shadowview.ShadowView
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_margin="20dp"
             android:background="#FF0000"
-            app:box_border_color="#00FF00"
-            app:box_border_thickness="2dp"
-            app:box_border_type="solid"
-            app:box_radius="10dp"
-            app:box_radius_left_bottom="8dp"
-            app:box_radius_right_bottom="20dp"
-            app:box_radius_right_top="5dp"
-            app:shadow_blur="5dp"
+            app:shadow_blur="10dp"
             app:shadow_color="#0000FF"
-            app:shadow_dx="30dp"
-            app:shadow_dy="40dp"
-            app:shadow_type="hard" />
+            app:shadow_inset="true" />
+
+        <com.github.xiaogqiong0v0.shadowview.ShadowView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_margin="20dp"
+            android:background="#FF0000"
+            app:shadow_blur="10dp"
+            app:shadow_color="#0000FF"
+            app:shadow_inset="true"
+            app:shadow_spread="5dp" />
+
+        <com.github.xiaogqiong0v0.shadowview.ShadowView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_margin="20dp"
+            android:background="#FF0000"
+            app:shadow_color="#0000FF"
+            app:shadow_inset="true"
+            app:shadow_spread="5dp" />
 
         <com.github.xiaogqiong0v0.shadowview.ShadowView
             android:layout_width="100dp"
@@ -229,7 +255,6 @@
             android:background="#FF0000"
             app:box_border_color="#00FF00"
             app:box_border_thickness="2dp"
-            app:box_border_type="solid"
             app:box_radius="10dp"
             app:box_radius_left_bottom="8dp"
             app:box_radius_right_bottom="20dp"
@@ -237,8 +262,9 @@
             app:shadow_blur="10dp"
             app:shadow_color="#0000FF"
             app:shadow_dx="10dp"
-            app:shadow_dy="20dp"
-            app:shadow_type="hard" />
+            app:shadow_dy="5dp"
+            app:shadow_inset="true"
+            app:shadow_spread="5dp" />
 
         <com.github.xiaogqiong0v0.shadowview.ShadowView
             android:layout_width="100dp"
@@ -247,120 +273,16 @@
             android:background="#FF0000"
             app:box_border_color="#00FF00"
             app:box_border_thickness="2dp"
-            app:box_border_type="solid"
             app:box_radius="10dp"
             app:box_radius_left_bottom="8dp"
             app:box_radius_right_bottom="20dp"
             app:box_radius_right_top="5dp"
             app:shadow_blur="10dp"
             app:shadow_color="#0000FF"
+            app:shadow_dx="10dp"
+            app:shadow_dy="5dp"
             app:shadow_inset="true"
-            app:shadow_type="soft" />
-
-        <com.github.xiaogqiong0v0.shadowview.ShadowView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_margin="20dp"
-            android:background="#FF0000"
-            app:box_border_color="#00FF00"
-            app:box_border_thickness="2dp"
-            app:box_border_type="solid"
-            app:box_radius="10dp"
-            app:box_radius_left_bottom="8dp"
-            app:box_radius_right_bottom="20dp"
-            app:box_radius_right_top="5dp"
-            app:shadow_blur="10dp"
-            app:shadow_color="#0000FF"
-            app:shadow_dx="5dp"
-            app:shadow_dy="3dp"
-            app:shadow_inset="true"
-            app:shadow_type="soft" />
-
-        <com.github.xiaogqiong0v0.shadowview.ShadowView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_margin="20dp"
-            android:background="#FF0000"
-            app:box_border_color="#00FF00"
-            app:box_border_thickness="2dp"
-            app:box_border_type="solid"
-            app:box_radius="10dp"
-            app:box_radius_left_bottom="8dp"
-            app:box_radius_right_bottom="20dp"
-            app:box_radius_right_top="5dp"
-            app:shadow_blur="10dp"
-            app:shadow_color="#0000FF"
-            app:shadow_inset="true"
-            app:shadow_type="hard" />
-
-        <com.github.xiaogqiong0v0.shadowview.ShadowView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_margin="20dp"
-            android:background="#FF0000"
-            app:box_border_color="#00FF00"
-            app:box_border_type="solid"
-            app:box_radius="10dp"
-            app:box_radius_left_bottom="8dp"
-            app:box_radius_right_bottom="20dp"
-            app:box_radius_right_top="5dp"
-            app:shadow_blur="10dp"
-            app:shadow_color="#0000FF"
-            app:shadow_inset="true"
-            app:shadow_type="hard" />
-
-        <com.github.xiaogqiong0v0.shadowview.ShadowView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_margin="20dp"
-            android:background="#FF0000"
-            app:box_border_color="#00FF00"
-            app:box_border_type="solid"
-            app:box_radius="10dp"
-            app:box_radius_left_bottom="8dp"
-            app:box_radius_right_bottom="20dp"
-            app:box_radius_right_top="5dp"
-            app:shadow_blur="10dp"
-            app:shadow_color="#0000FF"
-            app:shadow_dx="5dp"
-            app:shadow_dy="3dp"
-            app:shadow_inset="true"
-            app:shadow_type="hard" />
-
-        <com.github.xiaogqiong0v0.shadowview.ShadowView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_margin="20dp"
-            android:background="#FF0000"
-            app:box_border_color="#00FF00"
-            app:box_border_type="solid"
-            app:box_radius="10dp"
-            app:box_radius_left_bottom="8dp"
-            app:box_radius_right_bottom="20dp"
-            app:box_radius_right_top="5dp"
-            app:shadow_blur="10dp"
-            app:shadow_color="#0000FF"
-            app:shadow_dx="20dp"
-            app:shadow_dy="30dp"
-            app:shadow_inset="true"
-            app:shadow_type="hard" />
-
-        <com.github.xiaogqiong0v0.shadowview.ShadowView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_margin="20dp"
-            android:background="#FF0000"
-            app:box_border_color="#00FF00"
-            app:box_border_type="solid"
-            app:box_radius="10dp"
-            app:box_radius_left_bottom="8dp"
-            app:box_radius_right_bottom="20dp"
-            app:box_radius_right_top="5dp"
-            app:shadow_blur="10dp"
-            app:shadow_color="#0000FF"
-            app:shadow_dx="110dp"
-            app:shadow_dy="120dp"
-            app:shadow_inset="true"
+            app:shadow_spread="5dp"
             app:shadow_type="hard" />
     </GridLayout>
 </ScrollView>

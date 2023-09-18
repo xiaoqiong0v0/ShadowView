@@ -161,9 +161,14 @@ public class ShadowParams {
     private Path shadowToRightPath;
     @Nullable
     private Path shadowToBottomPath;
-    private boolean drawAble = false;
-    private boolean drawShadow = false;
 
+    /////////// status
+    private boolean drawAble = false;
+    private boolean allRadiusZero = false;
+    private boolean shadowBlurZero = false;
+    private boolean borderThicknessZero = false;
+    private boolean shadowThicknessZero = false;
+    ///////////
     private int savedLayerType;
     private Rect savedMargins;
     private Rect savedPaddings;
@@ -304,7 +309,7 @@ public class ShadowParams {
         if (!drawAble) {
             return;
         }
-        if (drawShadow) {
+        if (!shadowThicknessZero) {
             // 绘制阴影
             if (shadowInset) {
                 drawInsetShadow(canvas);
@@ -340,6 +345,10 @@ public class ShadowParams {
         if (currentW == 0 || currentH == 0) {
             return;
         }
+        allRadiusZero = allRadiusZero();
+        shadowBlurZero = shadowBlurZero();
+        borderThicknessZero = borderThicknessZero();
+        shadowThicknessZero = shadowThicknessZero();
         outerPath = getOuterPath(currentW, currentH);
         borderPath = getBorderPath(currentW, currentH);
         if (outerPath != null) {
@@ -349,15 +358,11 @@ public class ShadowParams {
                 view.setLayerType(savedLayerType, null);
             }
         }
-        if (shadowThicknessZero()) {
-            drawShadow = false;
-            return;
-        }
-        drawShadow = true;
+        if (shadowThicknessZero) return;
         if (shadowInset) {
             if (shadowType == SHADOW_TYPE_SOFT) {
                 shadowInnerPath = getInsetShadowPath(currentW, currentH);
-                if (!shadowBlurZero()) {
+                if (!shadowBlurZero) {
                     blurMaskFilter = new BlurMaskFilter(shadowBlur, BlurMaskFilter.Blur.NORMAL);
                 } else {
                     blurMaskFilter = null;
@@ -460,8 +465,6 @@ public class ShadowParams {
         if (shadowType == SHADOW_TYPE_SOFT) {
             if (blurMaskFilter != null) {
                 paint.setMaskFilter(blurMaskFilter);
-                canvas.drawPath(shadowInnerPath, paint);
-                paint.setMaskFilter(null);
             }
         } else {
             if (shadowLeftTopPath != null) {
@@ -498,8 +501,9 @@ public class ShadowParams {
             }
             paint.setMaskFilter(null);
             paint.setShader(null);
-            canvas.drawPath(shadowInnerPath, paint);
         }
+        canvas.drawPath(shadowInnerPath, paint);
+        paint.setMaskFilter(null);
         paint.setXfermode(clearMode);
         canvas.drawPath(innerPath, paint);
         paint.setXfermode(null);
@@ -573,16 +577,12 @@ public class ShadowParams {
         paint.setPathEffect(null);
     }
 
-    private void rectPath(Path path, RectF rectF) {
-        rectPath(path, rectF.left, rectF.top, rectF.right, rectF.bottom, true, false);
+    private void rectPath(Path path, RectF rectF, boolean clockwise) {
+        rectPath(path, rectF.left, rectF.top, rectF.right, rectF.bottom, clockwise, false);
     }
 
-    private void rectPath(Path path, RectF rectF, boolean clockwise, boolean lineToStart) {
-        rectPath(path, rectF.left, rectF.top, rectF.right, rectF.bottom, clockwise, lineToStart);
-    }
-
-    private void rectPath(Path path, float left, float top, float right, float bottom) {
-        rectPath(path, left, top, right, bottom, true, false);
+    private void rectPath(Path path, float left, float top, float right, float bottom, boolean clockwise) {
+        rectPath(path, left, top, right, bottom, clockwise, false);
     }
 
     private void rectPath(Path path, float left, float top, float right, float bottom, boolean clockwise, boolean lineToStart) {
@@ -615,12 +615,8 @@ public class ShadowParams {
         rectRadiusPath(path, rectF.left, rectF.top, rectF.right, rectF.bottom, true, false, 0);
     }
 
-    private void rectRadiusPath(Path path, RectF rectF, boolean clockwise, boolean lineToStart, float thickness) {
-        rectRadiusPath(path, rectF.left, rectF.top, rectF.right, rectF.bottom, clockwise, lineToStart, thickness);
-    }
-
-    private void rectRadiusPath(Path path, float left, float top, float right, float bottom) {
-        rectRadiusPath(path, left, top, right, bottom, true, false, 0);
+    private void rectRadiusPath(Path path, RectF rectF, boolean clockwise, float thickness) {
+        rectRadiusPath(path, rectF.left, rectF.top, rectF.right, rectF.bottom, clockwise, false, thickness);
     }
 
     /**
@@ -828,10 +824,6 @@ public class ShadowParams {
         }
     }
 
-    private boolean rectNoSize(RectF rectF) {
-        return rectF.right <= rectF.left || rectF.bottom <= rectF.top;
-    }
-
     private boolean shadowThicknessZero() {
         return shadowSpread + shadowBlur < 0.5f;
     }
@@ -889,7 +881,6 @@ public class ShadowParams {
      */
     @Nullable
     private Path getOuterPath(int w, int h) {
-        boolean allRadiusZero = allRadiusZero();
         if (shadowInset) {
             if (allRadiusZero) {
                 return null;
@@ -897,12 +888,10 @@ public class ShadowParams {
                 Path path = new Path();
                 RectF rectF = new RectF(0, 0, w, h);
                 rectRadiusPath(path, rectF);
-                rectPath(path, rectF, false, true);
-                path.close();
+                rectPath(path, rectF, false);
                 return path;
             }
         }
-        boolean shadowThicknessZero = shadowThicknessZero();
         if (shadowThicknessZero && allRadiusZero) {
             return null;
         }
@@ -912,9 +901,8 @@ public class ShadowParams {
             return null;
         } else {
             rectRadiusPath(path, innerArea);
-            rectPath(path, 0, 0, w, h, false, true);
+            rectPath(path, 0, 0, w, h, false, false);
         }
-        path.close();
         return path;
     }
 
@@ -929,7 +917,6 @@ public class ShadowParams {
         }
         Path path = new Path();
         rectRadiusPath(path, innerArea);
-        path.close();
         return path;
     }
 
@@ -938,9 +925,6 @@ public class ShadowParams {
      */
     @Nullable
     private Path getShadowInnerPath(int w, int h) {
-        if (shadowThicknessZero()) {
-            return null;
-        }
         RectF rectF = getInnerArea(w, h);
         if (rectF == null) {
             return null;
@@ -958,20 +942,12 @@ public class ShadowParams {
         }
         Path path = new Path();
         rectRadiusPath(path, rectF);
-        path.close();
         return path;
     }
 
     @Nullable
     private Path getInsetShadowPath(int w, int h) {
-        if (shadowThicknessZero()) {
-            return null;
-        }
         Path path = new Path();
-        if (shadowSpread == 0 && boxBorderThickness == 0) {
-            path.addRect(0, 0, w, h, Path.Direction.CW);
-            return path;
-        }
         float dis = shadowSpread + boxBorderThickness;
         RectF rectF = new RectF(dis, dis, w - dis, h - dis);
         if (rectNoSize(rectF)) {
@@ -981,9 +957,8 @@ public class ShadowParams {
         rectF.top += shadowDy;
         rectF.right += shadowDx;
         rectF.bottom += shadowDy;
-        rectRadiusPath(path, rectF, true, false, -boxBorderThickness);
-        rectPath(path, -dis, -dis, w + dis, h + dis, false, true);
-        path.close();
+        rectRadiusPath(path, rectF, true, -boxBorderThickness);
+        rectPath(path, -shadowBlur, -shadowBlur, w + shadowBlur, h + shadowBlur, false);
         return path;
     }
 
@@ -992,7 +967,7 @@ public class ShadowParams {
      */
     @Nullable
     private Path getBorderPath(int w, int h) {
-        if (borderThicknessZero()) {
+        if (borderThicknessZero) {
             return null;
         }
         RectF rectF;
@@ -1013,8 +988,7 @@ public class ShadowParams {
             return null;
         }
         Path path = new Path();
-        rectRadiusPath(path, rectF, true, false, -halfBorderThickness);
-        path.close();
+        rectRadiusPath(path, rectF, true, -halfBorderThickness);
         return path;
     }
 
@@ -1027,7 +1001,7 @@ public class ShadowParams {
         toTopShader = null;
         toRightShader = null;
         toBottomShader = null;
-        if (shadowBlurZero()) {
+        if (shadowBlurZero) {
             return;
         }
         // shadowInnerPath 不为空才调用 所有这里不可能为空
@@ -1047,7 +1021,6 @@ public class ShadowParams {
         }
         shadowInnerPath = new Path();
         rectRadiusPath(shadowInnerPath, shadowInnerArea);
-        shadowInnerPath.close();
         obtainShadowSplitPathAndShader(shadowInnerArea, shadowBlur, shadowColor, underColor);
     }
 
@@ -1062,7 +1035,7 @@ public class ShadowParams {
         toRightShader = null;
         toBottomShader = null;
         shadowInnerPath = null;
-        if (shadowBlurZero()) {
+        if (shadowBlurZero) {
             return;
         }
         float dis = shadowSpread + boxBorderThickness;
@@ -1125,6 +1098,10 @@ public class ShadowParams {
     private int dpi2px(float dpi) {
         Context context = view.getContext();
         return (int) (context.getResources().getDisplayMetrics().density * dpi + 0.5f);
+    }
+
+    private static boolean rectNoSize(RectF rectF) {
+        return rectF.right <= rectF.left || rectF.bottom <= rectF.top;
     }
 
     private static int getAngle(float y, float x) {

@@ -15,5 +15,6 @@ public class MainActivity extends AppCompatActivity {
         btnFirstTest.setOnClickListener(v -> {
             SingleTestActivity.start(MainActivity.this);
         });
+        ShadowView shadowView = new ShadowView(this);
     }
 }

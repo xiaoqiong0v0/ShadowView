@@ -18,7 +18,8 @@ public class ShadowView extends View {
     private ShadowParams shadowParams;
 
     public ShadowView(Context context) {
-        this(context, null);
+        super(context);
+        shadowParams = new ShadowParams(this);
     }
 
     public ShadowView(Context context, @Nullable AttributeSet attrs) {

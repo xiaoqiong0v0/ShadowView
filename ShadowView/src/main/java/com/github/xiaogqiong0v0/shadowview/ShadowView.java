@@ -2,6 +2,8 @@ package com.github.xiaogqiong0v0.shadowview;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Path;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -16,6 +18,7 @@ import androidx.annotation.Nullable;
  */
 public class ShadowView extends View {
     private ShadowParams shadowParams;
+    private Drawable background;
 
     public ShadowView(Context context) {
         super(context);
@@ -33,6 +36,9 @@ public class ShadowView extends View {
 
     private void init(@Nullable AttributeSet attrs, int defStyleAttr) {
         shadowParams = new ShadowParams(this, attrs, defStyleAttr);
+        if (background != null) {
+            shadowParams.setBackgroundDrawable(background);
+        }
     }
 
     public ShadowParams getShadowParams() {
@@ -46,8 +52,16 @@ public class ShadowView extends View {
     }
 
     @Override
+    public void setBackgroundDrawable(Drawable background) {
+        if (shadowParams == null) {
+            this.background = background;
+            return;
+        }
+        shadowParams.setBackgroundDrawable(background);
+    }
+
+    @Override
     protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-        shadowParams.draw(canvas);
+        shadowParams.draw(canvas, super::onDraw);
     }
 }

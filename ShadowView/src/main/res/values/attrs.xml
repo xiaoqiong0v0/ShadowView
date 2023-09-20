@@ -24,8 +24,6 @@
         <enum name="solid" value="0" />
         <enum name="dashed" value="1" />
     </attr>
-    <!--    阴影下层颜色 设置非透明可以提升性能-->
-    <attr name="under_color" format="color" />、
     <!--    自动添加 padding 仅外阴影  默认 true 否则布局参数不变 阴影绘制在内部 -->
     <attr name="auto_add_padding" format="boolean" />
     <!--    阴影自动转换宽高  仅外阴影 如果设置自动 margin 先使用margin 方便布局 意在尽量保持设置的宽高为可见宽高 -->
@@ -49,7 +47,6 @@
         <attr name="box_border_thickness" />
         <attr name="box_border_color" />
         <attr name="box_border_type" />
-        <attr name="under_color" />
         <attr name="auto_add_padding" />
         <attr name="auto_add_width_height" />
         <attr name="auto_del_margin" />
@@ -69,7 +66,6 @@
         <attr name="box_border_thickness" />
         <attr name="box_border_color" />
         <attr name="box_border_type" />
-        <attr name="under_color" />
         <attr name="auto_add_padding" />
         <attr name="auto_add_width_height" />
         <attr name="auto_del_margin" />
@@ -89,7 +85,6 @@
         <attr name="box_border_thickness" />
         <attr name="box_border_color" />
         <attr name="box_border_type" />
-        <attr name="under_color" />
         <attr name="auto_add_padding" />
         <attr name="auto_add_width_height" />
         <attr name="auto_del_margin" />
@@ -109,7 +104,6 @@
         <attr name="box_border_thickness" />
         <attr name="box_border_color" />
         <attr name="box_border_type" />
-        <attr name="under_color" />
         <attr name="auto_add_padding" />
         <attr name="auto_add_width_height" />
         <attr name="auto_del_margin" />
@@ -129,7 +123,6 @@
         <attr name="box_border_thickness" />
         <attr name="box_border_color" />
         <attr name="box_border_type" />
-        <attr name="under_color" />
         <attr name="auto_add_padding" />
         <attr name="auto_add_width_height" />
         <attr name="auto_del_margin" />
@@ -149,7 +142,6 @@
         <attr name="box_border_thickness" />
         <attr name="box_border_color" />
         <attr name="box_border_type" />
-        <attr name="under_color" />
         <attr name="auto_add_padding" />
         <attr name="auto_add_width_height" />
         <attr name="auto_del_margin" />
@@ -169,7 +161,6 @@
         <attr name="box_border_thickness" />
         <attr name="box_border_color" />
         <attr name="box_border_type" />
-        <attr name="under_color" />
         <attr name="auto_add_padding" />
         <attr name="auto_add_width_height" />
         <attr name="auto_del_margin" />
@@ -189,7 +180,6 @@
         <attr name="box_border_thickness" />
         <attr name="box_border_color" />
         <attr name="box_border_type" />
-        <attr name="under_color" />
         <attr name="auto_add_padding" />
         <attr name="auto_add_width_height" />
         <attr name="auto_del_margin" />

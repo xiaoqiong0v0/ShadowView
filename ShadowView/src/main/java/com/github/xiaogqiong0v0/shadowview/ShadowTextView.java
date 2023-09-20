@@ -2,6 +2,7 @@ package com.github.xiaogqiong0v0.shadowview;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 
 import androidx.annotation.Nullable;
@@ -16,9 +17,11 @@ import androidx.appcompat.widget.AppCompatTextView;
  */
 public class ShadowTextView extends AppCompatTextView {
     private ShadowParams shadowParams;
+    private Drawable background;
 
     public ShadowTextView(Context context) {
-        this(context, null);
+        super(context);
+        shadowParams = new ShadowParams(this);
     }
 
     public ShadowTextView(Context context, @Nullable AttributeSet attrs) {
@@ -32,6 +35,9 @@ public class ShadowTextView extends AppCompatTextView {
 
     private void init(@Nullable AttributeSet attrs, int defStyleAttr) {
         shadowParams = new ShadowParams(this, attrs, defStyleAttr);
+        if (background != null) {
+            shadowParams.setBackgroundDrawable(background);
+        }
     }
 
     public ShadowParams getShadowParams() {
@@ -43,10 +49,16 @@ public class ShadowTextView extends AppCompatTextView {
         super.onSizeChanged(w, h, oldw, oldh);
         shadowParams.initDraw(w, h);
     }
-
     @Override
-    protected void dispatchDraw(Canvas canvas) {
-        super.dispatchDraw(canvas);
-        shadowParams.draw(canvas);
+    public void setBackgroundDrawable(Drawable background) {
+        if (shadowParams == null) {
+            this.background = background;
+            return;
+        }
+        shadowParams.setBackgroundDrawable(background);
+    }
+    @Override
+    protected void onDraw(Canvas canvas) {
+        shadowParams.draw(canvas, super::onDraw);
     }
 }

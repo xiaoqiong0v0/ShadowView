@@ -39,7 +39,7 @@
             android:background="#FF0000"
             app:box_border_color="#00FF00"
             app:box_radius="20dp"
-            app:under_color="#DDDDDD" />
+             />
 
         <com.github.xiaogqiong0v0.shadowview.ShadowView
             android:layout_width="100dp"
@@ -293,7 +293,7 @@
             app:auto_add_padding="false"
             app:shadow_blur="5dp"
             app:shadow_spread="5dp"
-            app:under_color="#DDDDDD" />
+             />
 
         <com.github.xiaogqiong0v0.shadowview.ShadowView
             android:layout_width="100dp"
@@ -304,6 +304,6 @@
             app:auto_del_margin="true"
             app:shadow_blur="5dp"
             app:shadow_spread="5dp"
-            app:under_color="#DDDDDD" />
+             />
     </GridLayout>
 </ScrollView>

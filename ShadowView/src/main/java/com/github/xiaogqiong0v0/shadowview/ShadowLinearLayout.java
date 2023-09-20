@@ -43,12 +43,11 @@ public class ShadowLinearLayout extends LinearLayout {
     public ShadowParams getShadowParams() {
         return shadowParams;
     }
-
     @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
-        shadowParams.initDraw(w, h);
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        shadowParams.measure(widthMeasureSpec, heightMeasureSpec, super::onMeasure);
     }
+
     @Override
     public void setBackgroundDrawable(Drawable background) {
         if (shadowParams == null) {
@@ -57,6 +56,7 @@ public class ShadowLinearLayout extends LinearLayout {
         }
         shadowParams.setBackgroundDrawable(background);
     }
+
     @Override
     protected void onDraw(Canvas canvas) {
         shadowParams.draw(canvas, super::onDraw);

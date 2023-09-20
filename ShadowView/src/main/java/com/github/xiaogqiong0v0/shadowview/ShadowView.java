@@ -6,6 +6,7 @@ import android.graphics.Path;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
 
@@ -46,9 +47,8 @@ public class ShadowView extends View {
     }
 
     @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
-        shadowParams.initDraw(w, h);
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        shadowParams.measure(widthMeasureSpec, heightMeasureSpec, super::onMeasure);
     }
 
     @Override

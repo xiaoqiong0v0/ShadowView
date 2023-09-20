@@ -18,6 +18,7 @@ import android.graphics.Shader;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -304,9 +305,20 @@ public class ShadowParams {
         backgroundDrawable = drawable;
     }
 
-    public final void refreshDraw() {
-        initDraw(view.getWidth(), view.getHeight());
-        view.postInvalidate();
+    public final void measure(int widthMeasureSpec, int heightMeasureSpec, OnMeasureListener onMeasureSuperListener) {
+        // 多次测量
+        onMeasureSuperListener.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        int w = view.getMeasuredWidth();
+        int h = view.getMeasuredHeight();
+        if (w <= 0 || h <= 0) {
+            drawAble = false;
+            return;
+        }
+        currentW = w;
+        currentH = h;
+        refreshParams();
+        onMeasureSuperListener.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        drawAble = true;
     }
 
     public final void draw(Canvas canvas, OnDrawSuperListener onDrawSuperListener) {
@@ -328,20 +340,6 @@ public class ShadowParams {
             drawClipSuper(canvas, onDrawSuperListener);
         }
         drawBorder(canvas);
-    }
-
-    /**
-     * 绘制阴影为bitmap
-     */
-    public final void initDraw(int w, int h) {
-        if (w <= 0 || h <= 0) {
-            drawAble = false;
-            return;
-        }
-        currentW = w;
-        currentH = h;
-        refreshParams();
-        drawAble = true;
     }
 
     public final void refreshParams() {
@@ -1481,6 +1479,10 @@ public class ShadowParams {
             // 设置下侧阴影
             bottomShader.value = new LinearGradient(0, innerBottom, 0, outerBottom, color2, null, Shader.TileMode.CLAMP);
         } // else // 下侧没有尺寸
+    }
+
+    public interface OnMeasureListener {
+        void onMeasure(int widthMeasureSpec, int heightMeasureSpec);
     }
 
     public interface OnDrawSuperListener {

@@ -46,9 +46,8 @@ public class ShadowFrameLayout extends FrameLayout {
     }
 
     @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
-        shadowParams.initDraw(w, h);
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        shadowParams.measure(widthMeasureSpec, heightMeasureSpec, super::onMeasure);
     }
     @Override
     public void setBackgroundDrawable(Drawable background) {

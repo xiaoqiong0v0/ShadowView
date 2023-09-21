@@ -5,15 +5,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".SingleTestActivity">
+    tools:context=".SingleTestActivity"
+    android:id="@+id/test_view">
 
     <com.github.xiaogqiong0v0.shadowview.ShadowView
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_margin="20dp"
         android:background="#FF0000"
-        app:out_clear_mode="clear"
+        app:auto_add_padding="false"
+        app:auto_add_width_height="true"
         app:shadow_blur="5dp"
-        app:shadow_clip="right|bottom"
         app:shadow_spread="5dp" />
+    <Button
+        android:id="@+id/test_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="测试"/>
 </LinearLayout>

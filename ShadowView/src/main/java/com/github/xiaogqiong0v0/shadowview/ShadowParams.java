@@ -140,7 +140,8 @@ public class ShadowParams {
 
     /////////////////////////////////////////////
     private final View view;
-    private final PorterDuffXfermode clearMode = new PorterDuffXfermode(PorterDuff.Mode.CLEAR);
+    private final PorterDuffXfermode porterDuffClearMode = new PorterDuffXfermode(PorterDuff.Mode.CLEAR);
+    private final PorterDuffXfermode porterDuffDstOutMode = new PorterDuffXfermode(PorterDuff.Mode.DST_OUT);
     private Paint paint;
     @Nullable
     private BlurMaskFilter blurMaskFilter;
@@ -193,6 +194,7 @@ public class ShadowParams {
     private boolean shadowBlurZero = false;
     private boolean borderThicknessZero = false;
     private boolean shadowThicknessZero = false;
+    private boolean layoutChanged = false;
     ///////////
     private int savedLayerType;
     private Rect savedMargins;
@@ -364,6 +366,12 @@ public class ShadowParams {
     }
 
     public final void measure(int widthMeasureSpec, int heightMeasureSpec, OnMeasureListener onMeasureSuperListener) {
+        if (shadowInset) {
+            restoreLayout();
+        } else {
+            // 先改变layout参数 改变与宽高无关
+            changeLayout();
+        }
         // 多次测量
         onMeasureSuperListener.onMeasure(widthMeasureSpec, heightMeasureSpec);
         int w = view.getMeasuredWidth();
@@ -375,7 +383,6 @@ public class ShadowParams {
         currentW = w;
         currentH = h;
         refreshParams();
-        onMeasureSuperListener.onMeasure(widthMeasureSpec, heightMeasureSpec);
         drawAble = true;
     }
 
@@ -415,7 +422,6 @@ public class ShadowParams {
                 drawClipSuper(canvas, onDrawSuperListener);
             }
         }
-
         drawBorder(canvas);
     }
 
@@ -455,68 +461,7 @@ public class ShadowParams {
             } else {
                 obtainInsetShadowSplitPathAndShader();
             }
-
-            ViewGroup.LayoutParams params = view.getLayoutParams();
-            if (params instanceof ViewGroup.MarginLayoutParams) {
-                ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup.MarginLayoutParams) params;
-                marginLayoutParams.leftMargin = savedMargins.left;
-                marginLayoutParams.topMargin = savedMargins.top;
-                marginLayoutParams.rightMargin = savedMargins.right;
-                marginLayoutParams.bottomMargin = savedMargins.bottom;
-            }
-            params.width = savedWidthHeight.getWidth();
-            params.height = savedWidthHeight.getHeight();
-            view.setLayoutParams(params);
-            if (autoAddPadding) {
-                view.setPadding(savedPaddings.left, savedPaddings.top, savedPaddings.right, savedPaddings.bottom);
-            }
         } else {
-            Rect paddings = getPaddingRect();
-            ViewGroup.LayoutParams params = view.getLayoutParams();
-            params.width = savedWidthHeight.getWidth();
-            params.height = savedWidthHeight.getHeight();
-            if (autoDelMargin && params instanceof ViewGroup.MarginLayoutParams) {
-                ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup.MarginLayoutParams) params;
-                marginLayoutParams.leftMargin = savedMargins.left;
-                marginLayoutParams.topMargin = savedMargins.top;
-                marginLayoutParams.rightMargin = savedMargins.right;
-                marginLayoutParams.bottomMargin = savedMargins.bottom;
-                int tmp;
-                if (savedMargins.left > 0) {
-                    tmp = Math.min(savedMargins.left, paddings.left);
-                    marginLayoutParams.leftMargin -= tmp;
-                    paddings.left -= tmp;
-                    params.width += tmp;
-                }
-                if (savedMargins.top > 0) {
-                    tmp = Math.min(savedMargins.top, paddings.top);
-                    marginLayoutParams.topMargin -= tmp;
-                    paddings.top -= tmp;
-                    params.height += tmp;
-                }
-                if (savedMargins.right > 0) {
-                    tmp = Math.min(savedMargins.right, paddings.right);
-                    marginLayoutParams.rightMargin -= tmp;
-                    paddings.right -= tmp;
-                    params.width += tmp;
-                }
-                if (savedMargins.bottom > 0) {
-                    tmp = Math.min(savedMargins.bottom, paddings.bottom);
-                    marginLayoutParams.bottomMargin -= tmp;
-                    paddings.bottom -= tmp;
-                    params.height += tmp;
-                }
-            }
-            if (autoAddWidthHeight) {
-                params.width += paddings.left + paddings.right;
-                params.height += paddings.top + paddings.bottom;
-                paddings = new Rect();
-            }
-            view.setLayoutParams(params);
-            if (autoAddPadding) {
-                view.setPadding(Math.max(savedPaddings.left, paddings.left), Math.max(savedPaddings.top, paddings.top),
-                        Math.max(savedPaddings.right, paddings.right), Math.max(savedPaddings.bottom, paddings.bottom));
-            }
             innerPath = getInnerPath(currentW, currentH);
             if (shadowType == SHADOW_TYPE_SOFT) {
                 // 软阴影 使用 blurMaskFilter
@@ -559,7 +504,7 @@ public class ShadowParams {
         // 设置画笔
         paint.setColor(underColor);
         paint.setStyle(Paint.Style.FILL);
-        paint.setXfermode(underColor != 0 ? null : clearMode);
+        paint.setXfermode(underColor != 0 ? null : porterDuffClearMode);
         canvas.drawPath(outerPath, paint);
         // 重置画笔
         paint.setXfermode(null);
@@ -614,7 +559,7 @@ public class ShadowParams {
         }
         canvas.drawPath(shadowInnerPath, paint);
         paint.setMaskFilter(null);
-        paint.setXfermode(clearMode);
+        paint.setXfermode(porterDuffDstOutMode);
         canvas.drawPath(innerPath, paint);
         paint.setXfermode(null);
         canvas.restore();
@@ -685,6 +630,77 @@ public class ShadowParams {
         canvas.drawPath(borderPath, paint);
         paint.setStrokeWidth(0);
         paint.setPathEffect(null);
+    }
+
+    private void restoreLayout() {
+        if (!layoutChanged) {
+            return;
+        }
+        layoutChanged = false;
+        ViewGroup.LayoutParams params = view.getLayoutParams();
+        if (params instanceof ViewGroup.MarginLayoutParams) {
+            ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup.MarginLayoutParams) params;
+            marginLayoutParams.leftMargin = savedMargins.left;
+            marginLayoutParams.topMargin = savedMargins.top;
+            marginLayoutParams.rightMargin = savedMargins.right;
+            marginLayoutParams.bottomMargin = savedMargins.bottom;
+        }
+        params.width = savedWidthHeight.getWidth();
+        params.height = savedWidthHeight.getHeight();
+        view.setLayoutParams(params);
+        if (autoAddPadding) {
+            view.setPadding(savedPaddings.left, savedPaddings.top, savedPaddings.right, savedPaddings.bottom);
+        }
+    }
+
+    private void changeLayout() {
+        layoutChanged = true;
+        Rect paddings = getPaddingRect();
+        ViewGroup.LayoutParams params = view.getLayoutParams();
+        params.width = savedWidthHeight.getWidth();
+        params.height = savedWidthHeight.getHeight();
+        if (autoDelMargin && params instanceof ViewGroup.MarginLayoutParams) {
+            ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup.MarginLayoutParams) params;
+            marginLayoutParams.leftMargin = savedMargins.left;
+            marginLayoutParams.topMargin = savedMargins.top;
+            marginLayoutParams.rightMargin = savedMargins.right;
+            marginLayoutParams.bottomMargin = savedMargins.bottom;
+            int tmp;
+            if (savedMargins.left > 0) {
+                tmp = Math.min(savedMargins.left, paddings.left);
+                marginLayoutParams.leftMargin -= tmp;
+                paddings.left -= tmp;
+                params.width += tmp;
+            }
+            if (savedMargins.top > 0) {
+                tmp = Math.min(savedMargins.top, paddings.top);
+                marginLayoutParams.topMargin -= tmp;
+                paddings.top -= tmp;
+                params.height += tmp;
+            }
+            if (savedMargins.right > 0) {
+                tmp = Math.min(savedMargins.right, paddings.right);
+                marginLayoutParams.rightMargin -= tmp;
+                paddings.right -= tmp;
+                params.width += tmp;
+            }
+            if (savedMargins.bottom > 0) {
+                tmp = Math.min(savedMargins.bottom, paddings.bottom);
+                marginLayoutParams.bottomMargin -= tmp;
+                paddings.bottom -= tmp;
+                params.height += tmp;
+            }
+        }
+        if (autoAddWidthHeight) {
+            params.width += paddings.left + paddings.right;
+            params.height += paddings.top + paddings.bottom;
+            paddings = new Rect();
+        }
+        view.setLayoutParams(params);
+        if (autoAddPadding) {
+            view.setPadding(Math.max(savedPaddings.left, paddings.left), Math.max(savedPaddings.top, paddings.top),
+                    Math.max(savedPaddings.right, paddings.right), Math.max(savedPaddings.bottom, paddings.bottom));
+        }
     }
 
     private void rectPath(Path path, RectF rectF, boolean clockwise) {

@@ -141,28 +141,6 @@
         <attr name="auto_add_width_height" />
         <attr name="auto_del_margin" />
     </declare-styleable>
-    <declare-styleable name="ShadowRecyclerView">
-        <attr name="shadow_color" />
-        <attr name="shadow_dx" />
-        <attr name="shadow_dy" />
-        <attr name="shadow_blur" />
-        <attr name="shadow_spread" />
-        <attr name="shadow_inset" />
-        <attr name="shadow_clip" />
-        <attr name="box_radius" />
-        <attr name="box_radius_left_top" />
-        <attr name="box_radius_right_top" />
-        <attr name="box_radius_right_bottom" />
-        <attr name="box_radius_left_bottom" />
-        <attr name="box_border_thickness" />
-        <attr name="box_border_color" />
-        <attr name="box_border_type" />
-        <attr name="under_color" />
-        <attr name="out_clear_mode" />
-        <attr name="auto_add_padding" />
-        <attr name="auto_add_width_height" />
-        <attr name="auto_del_margin" />
-    </declare-styleable>
     <declare-styleable name="ShadowTextView">
         <attr name="shadow_color" />
         <attr name="shadow_dx" />

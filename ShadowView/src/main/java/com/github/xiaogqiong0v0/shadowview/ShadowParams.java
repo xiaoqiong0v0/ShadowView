@@ -18,7 +18,6 @@ import android.graphics.Shader;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -77,6 +76,15 @@ public class ShadowParams {
     public static final int SHADOW_TYPE_SOFT = 0;
     public static final int SHADOW_TYPE_HARD = 1;
 
+    @IntDef({SHADOW_CLIP_NONE, SHADOW_CLIP_LEFT, SHADOW_CLIP_TOP, SHADOW_CLIP_RIGHT, SHADOW_CLIP_BOTTOM})
+    public @interface ShadowClip {
+    }
+
+    public static final int SHADOW_CLIP_NONE = 0;
+    public static final int SHADOW_CLIP_LEFT = 1;
+    public static final int SHADOW_CLIP_TOP = 2;
+    public static final int SHADOW_CLIP_RIGHT = 4;
+    public static final int SHADOW_CLIP_BOTTOM = 8;
 
     //
     public int shadowColor;
@@ -87,6 +95,8 @@ public class ShadowParams {
     // 阴影张度
     public int shadowSpread;
     public boolean shadowInset;
+    @ShadowClip
+    public int shadowClip;
     @ShadowType
     public int shadowType;
     public int boxRadiusLeftTop;
@@ -187,8 +197,9 @@ public class ShadowParams {
         shadowBlur = attr.getDimensionPixelSize(R.styleable.ShadowView_shadow_blur, 0);
         shadowSpread = attr.getDimensionPixelSize(R.styleable.ShadowView_shadow_spread, 0);
         shadowInset = attr.getBoolean(R.styleable.ShadowView_shadow_inset, false);
-        final int boxRadius = attr.getDimensionPixelSize(R.styleable.ShadowView_box_radius, 0);
         shadowType = attr.getInt(R.styleable.ShadowView_shadow_type, SHADOW_TYPE_SOFT);
+        shadowClip = attr.getInt(R.styleable.ShadowView_shadow_clip, SHADOW_CLIP_NONE);
+        final int boxRadius = attr.getDimensionPixelSize(R.styleable.ShadowView_box_radius, 0);
         boxRadiusLeftTop = attr.getDimensionPixelSize(R.styleable.ShadowView_box_radius_left_top, boxRadius);
         boxRadiusRightTop = attr.getDimensionPixelSize(R.styleable.ShadowView_box_radius_right_top, boxRadius);
         boxRadiusRightBottom = attr.getDimensionPixelSize(R.styleable.ShadowView_box_radius_right_bottom, boxRadius);
@@ -218,6 +229,7 @@ public class ShadowParams {
         shadowSpread = 0;
         shadowInset = false;
         shadowType = SHADOW_TYPE_SOFT;
+        shadowClip = SHADOW_CLIP_NONE;
         boxRadiusLeftTop = 0;
         boxRadiusRightTop = 0;
         boxRadiusRightBottom = 0;
@@ -265,6 +277,18 @@ public class ShadowParams {
         } else if (rect.top < 0) {
             rect.bottom += rect.top;
             rect.top = 0;
+        }
+        if ((shadowClip & SHADOW_CLIP_LEFT) == SHADOW_CLIP_LEFT) {
+            rect.left = 0;
+        }
+        if ((shadowClip & SHADOW_CLIP_TOP) == SHADOW_CLIP_TOP) {
+            rect.top = 0;
+        }
+        if ((shadowClip & SHADOW_CLIP_RIGHT) == SHADOW_CLIP_RIGHT) {
+            rect.right = 0;
+        }
+        if ((shadowClip & SHADOW_CLIP_BOTTOM) == SHADOW_CLIP_BOTTOM) {
+            rect.bottom = 0;
         }
         return rect;
     }
@@ -872,6 +896,18 @@ public class ShadowParams {
         } else if (rectF.top < 0) {
             rectF.bottom -= rectF.top;
             rectF.top = 0;
+        }
+        if ((shadowClip & SHADOW_CLIP_LEFT) == SHADOW_CLIP_LEFT) {
+            rectF.left = 0;
+        }
+        if ((shadowClip & SHADOW_CLIP_TOP) == SHADOW_CLIP_TOP) {
+            rectF.top = 0;
+        }
+        if ((shadowClip & SHADOW_CLIP_RIGHT) == SHADOW_CLIP_RIGHT) {
+            rectF.right = 0;
+        }
+        if ((shadowClip & SHADOW_CLIP_BOTTOM) == SHADOW_CLIP_BOTTOM) {
+            rectF.bottom = 0;
         }
         rectF.right = w - rectF.right;
         rectF.bottom = h - rectF.bottom;

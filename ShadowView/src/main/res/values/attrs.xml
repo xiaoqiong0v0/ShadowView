@@ -9,9 +9,18 @@
     <attr name="shadow_spread" format="dimension" />
     <!--    内阴影-->
     <attr name="shadow_inset" format="boolean" />
+    <!--    阴影类型-->
     <attr name="shadow_type" format="enum">
         <enum name="soft" value="0" />
         <enum name="hard" value="1" />
+    </attr>
+    <!-- 阴影贴边裁剪 外阴影有效-->
+    <attr name="shadow_clip">
+        <flag name="none" value="0" />
+        <flag name="left" value="1" />
+        <flag name="top" value="2" />
+        <flag name="right" value="4" />
+        <flag name="bottom" value="8" />
     </attr>
     <attr name="box_radius" format="dimension" />
     <attr name="box_radius_left_top" format="dimension" />
@@ -39,6 +48,7 @@
         <attr name="shadow_spread" />
         <attr name="shadow_inset" />
         <attr name="shadow_type" />
+        <attr name="shadow_clip" />
         <attr name="box_radius" />
         <attr name="box_radius_left_top" />
         <attr name="box_radius_right_top" />
@@ -58,6 +68,7 @@
         <attr name="shadow_blur" />
         <attr name="shadow_spread" />
         <attr name="shadow_inset" />
+        <attr name="shadow_clip" />
         <attr name="box_radius" />
         <attr name="box_radius_left_top" />
         <attr name="box_radius_right_top" />
@@ -77,6 +88,7 @@
         <attr name="shadow_blur" />
         <attr name="shadow_spread" />
         <attr name="shadow_inset" />
+        <attr name="shadow_clip" />
         <attr name="box_radius" />
         <attr name="box_radius_left_top" />
         <attr name="box_radius_right_top" />
@@ -96,6 +108,7 @@
         <attr name="shadow_blur" />
         <attr name="shadow_spread" />
         <attr name="shadow_inset" />
+        <attr name="shadow_clip" />
         <attr name="box_radius" />
         <attr name="box_radius_left_top" />
         <attr name="box_radius_right_top" />
@@ -115,6 +128,7 @@
         <attr name="shadow_blur" />
         <attr name="shadow_spread" />
         <attr name="shadow_inset" />
+        <attr name="shadow_clip" />
         <attr name="box_radius" />
         <attr name="box_radius_left_top" />
         <attr name="box_radius_right_top" />
@@ -134,6 +148,7 @@
         <attr name="shadow_blur" />
         <attr name="shadow_spread" />
         <attr name="shadow_inset" />
+        <attr name="shadow_clip" />
         <attr name="box_radius" />
         <attr name="box_radius_left_top" />
         <attr name="box_radius_right_top" />
@@ -153,6 +168,7 @@
         <attr name="shadow_blur" />
         <attr name="shadow_spread" />
         <attr name="shadow_inset" />
+        <attr name="shadow_clip" />
         <attr name="box_radius" />
         <attr name="box_radius_left_top" />
         <attr name="box_radius_right_top" />
@@ -172,6 +188,7 @@
         <attr name="shadow_blur" />
         <attr name="shadow_spread" />
         <attr name="shadow_inset" />
+        <attr name="shadow_clip" />
         <attr name="box_radius" />
         <attr name="box_radius_left_top" />
         <attr name="box_radius_right_top" />

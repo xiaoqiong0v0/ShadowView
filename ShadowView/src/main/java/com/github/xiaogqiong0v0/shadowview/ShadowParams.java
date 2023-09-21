@@ -303,6 +303,9 @@ public class ShadowParams {
      */
     public final void setBackgroundDrawable(@Nullable Drawable drawable) {
         backgroundDrawable = drawable;
+        if (drawable != null && currentW > 0 && currentH > 0) {
+            drawable.setBounds(0, 0, currentW, currentH);
+        }
     }
 
     public final void measure(int widthMeasureSpec, int heightMeasureSpec, OnMeasureListener onMeasureSuperListener) {

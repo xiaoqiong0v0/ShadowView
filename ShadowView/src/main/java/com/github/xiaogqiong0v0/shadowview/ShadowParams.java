@@ -32,7 +32,7 @@ import androidx.annotation.Nullable;
  * 时间：2022/3/23 - 17:25
  * 说明：阴影区域 等于 rect - spread(张度) - blur(模糊半径) + shadowDx + shadowDy
  * 边框直接绘制在显示区域 不算在padding里面
- * 普通阴影
+ * 普通阴影 涉及样式改变 可直接 invalidate 否则需要手动调用 refreshParams
  * ╭─────────────────────────────────────────────────────────────────────────────────────╮
  * │                          shadowBlur                                                 │
  * │     ╭──────────────────────────────────────────────────────────────────────────╮    │
@@ -86,6 +86,12 @@ public class ShadowParams {
     public static final int SHADOW_CLIP_RIGHT = 4;
     public static final int SHADOW_CLIP_BOTTOM = 8;
 
+    @IntDef({OUT_CLEAR_MODE_CLIP, OUT_CLEAR_MODE_CLEAR})
+    public @interface OutClearMode {
+    }
+
+    public static final int OUT_CLEAR_MODE_CLIP = 0;
+    public static final int OUT_CLEAR_MODE_CLEAR = 1;
     //
     public int shadowColor;
     public int shadowDx;
@@ -107,6 +113,15 @@ public class ShadowParams {
     public int boxBorderColor;
     @BorderType
     public int boxBorderType;
+    /**
+     * 阴影下层颜色 设置非透明可以提升性能
+     */
+    public int underColor;
+    /**
+     * 外部清除模式 仅外阴影 默认 clip
+     */
+    @OutClearMode
+    public int outClearMode;
     /**
      * 自动添加padding 仅外阴影  默认 true
      * 否则布局参数不变 阴影绘制在内部
@@ -148,6 +163,8 @@ public class ShadowParams {
     @Nullable
     private Path clipPath;
     @Nullable
+    private Path outerPath;
+    @Nullable
     private Path borderPath;
     @Nullable
     private Path innerPath;
@@ -177,6 +194,7 @@ public class ShadowParams {
     private boolean borderThicknessZero = false;
     private boolean shadowThicknessZero = false;
     ///////////
+    private int savedLayerType;
     private Rect savedMargins;
     private Rect savedPaddings;
     private Size savedWidthHeight;
@@ -207,11 +225,14 @@ public class ShadowParams {
         boxBorderThickness = attr.getDimensionPixelSize(R.styleable.ShadowView_box_border_thickness, 0);
         boxBorderColor = attr.getColor(R.styleable.ShadowView_box_border_color, Color.BLACK);
         boxBorderType = attr.getInt(R.styleable.ShadowView_box_border_type, BORDER_TYPE_SOLID);
+        underColor = attr.getColor(R.styleable.ShadowView_under_color, Color.TRANSPARENT);
+        outClearMode = attr.getInt(R.styleable.ShadowView_out_clear_mode, OUT_CLEAR_MODE_CLIP);
         autoAddPadding = attr.getBoolean(R.styleable.ShadowView_auto_add_padding, true);
         autoAddWidthHeight = attr.getBoolean(R.styleable.ShadowView_auto_add_width_height, false);
         autoDelMargin = attr.getBoolean(R.styleable.ShadowView_auto_del_margin, false);
         attr.recycle();
         //
+        savedLayerType = view.getLayerType();
         ViewGroup.MarginLayoutParams params = new ViewGroup.MarginLayoutParams(view.getContext(), attrs);
         savedPaddings = new Rect(view.getPaddingLeft(), view.getPaddingTop(), view.getPaddingRight(), view.getPaddingBottom());
         savedMargins = new Rect(params.leftMargin, params.topMargin, params.rightMargin, params.bottomMargin);
@@ -229,6 +250,8 @@ public class ShadowParams {
         shadowSpread = 0;
         shadowInset = false;
         shadowType = SHADOW_TYPE_SOFT;
+        underColor = Color.TRANSPARENT;
+        outClearMode = OUT_CLEAR_MODE_CLIP;
         shadowClip = SHADOW_CLIP_NONE;
         boxRadiusLeftTop = 0;
         boxRadiusRightTop = 0;
@@ -241,6 +264,7 @@ public class ShadowParams {
         autoAddWidthHeight = false;
         autoDelMargin = false;
         //
+        savedLayerType = view.getLayerType();
         savedMargins = new Rect();
         savedPaddings = new Rect();
         savedWidthHeight = new Size(0, 0);
@@ -291,6 +315,13 @@ public class ShadowParams {
             rect.bottom = 0;
         }
         return rect;
+    }
+
+    /**
+     * 动态调用需手动更新
+     */
+    public final void loadLayerTypeChanged() {
+        savedLayerType = view.getLayerType();
     }
 
     /**
@@ -352,20 +383,39 @@ public class ShadowParams {
         if (!drawAble) {
             return;
         }
-        if (!shadowThicknessZero) {
-            // 绘制阴影
-            if (shadowInset) {
-                drawClipSuper(canvas, onDrawSuperListener);
-                drawInsetShadow(canvas);
+        if (outClearMode == OUT_CLEAR_MODE_CLEAR) {
+            drawSuper(canvas, onDrawSuperListener);
+            if (!shadowThicknessZero) {
+                // 绘制阴影
+                if (shadowInset) {
+                    drawInsetShadow(canvas);
+                    // 把多余的清除
+                    drawOuterClear(canvas);
+                } else {
+                    // 把多余的清除
+                    drawOuterClear(canvas);
+                    drawShadow(canvas);
+                }
             } else {
-                drawShadow(canvas);
-                canvas.saveLayer(0, 0, currentW, currentH, null, Canvas.ALL_SAVE_FLAG);
-                drawClipSuper(canvas, onDrawSuperListener);
-                canvas.restore();
+                drawOuterClear(canvas);
             }
         } else {
-            drawClipSuper(canvas, onDrawSuperListener);
+            if (!shadowThicknessZero) {
+                // 绘制阴影
+                if (shadowInset) {
+                    drawClipSuper(canvas, onDrawSuperListener);
+                    drawInsetShadow(canvas);
+                } else {
+                    drawShadow(canvas);
+                    canvas.saveLayer(0, 0, currentW, currentH, null, Canvas.ALL_SAVE_FLAG);
+                    drawClipSuper(canvas, onDrawSuperListener);
+                    canvas.restore();
+                }
+            } else {
+                drawClipSuper(canvas, onDrawSuperListener);
+            }
         }
+
         drawBorder(canvas);
     }
 
@@ -380,7 +430,18 @@ public class ShadowParams {
         shadowBlurZero = shadowBlurZero();
         borderThicknessZero = borderThicknessZero();
         shadowThicknessZero = shadowThicknessZero();
-        clipPath = getClipPath(currentW, currentH);
+        if (outClearMode == OUT_CLEAR_MODE_CLEAR) {
+            outerPath = getOuterPath(currentW, currentH);
+            if (outerPath != null) {
+                if (underColor == Color.TRANSPARENT) {
+                    view.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+                } else {
+                    view.setLayerType(savedLayerType, null);
+                }
+            }
+        } else {
+            clipPath = getClipPath(currentW, currentH);
+        }
         borderPath = getBorderPath(currentW, currentH);
         if (shadowThicknessZero) return;
         if (shadowInset) {
@@ -474,6 +535,13 @@ public class ShadowParams {
         }
     }
 
+    private void drawSuper(Canvas canvas, OnDrawSuperListener onDrawSuperListener) {
+        if (backgroundDrawable != null) {
+            backgroundDrawable.draw(canvas);
+        }
+        onDrawSuperListener.onDrawSuper(canvas);
+    }
+
     private void drawClipSuper(Canvas canvas, OnDrawSuperListener onDrawSuperListener) {
         if (clipPath != null) {
             canvas.clipPath(clipPath);
@@ -482,6 +550,19 @@ public class ShadowParams {
             backgroundDrawable.draw(canvas);
         }
         onDrawSuperListener.onDrawSuper(canvas);
+    }
+
+    private void drawOuterClear(Canvas canvas) {
+        if (outerPath == null) {
+            return;
+        }
+        // 设置画笔
+        paint.setColor(underColor);
+        paint.setStyle(Paint.Style.FILL);
+        paint.setXfermode(underColor != 0 ? null : clearMode);
+        canvas.drawPath(outerPath, paint);
+        // 重置画笔
+        paint.setXfermode(null);
     }
 
     private void drawShadow(Canvas canvas) {
@@ -915,6 +996,36 @@ public class ShadowParams {
             return null;
         }
         return rectF;
+    }
+
+    /**
+     * 获取外部区域 圆角外或者阴影区域
+     */
+    @Nullable
+    private Path getOuterPath(int w, int h) {
+        if (shadowInset) {
+            if (allRadiusZero) {
+                return null;
+            } else {
+                Path path = new Path();
+                RectF rectF = new RectF(0, 0, w, h);
+                rectRadiusPath(path, rectF);
+                rectPath(path, rectF, false);
+                return path;
+            }
+        }
+        if (shadowThicknessZero && allRadiusZero) {
+            return null;
+        }
+        Path path = new Path();
+        RectF innerArea = getInnerArea(w, h);
+        if (innerArea == null) {
+            return null;
+        } else {
+            rectRadiusPath(path, innerArea);
+            rectPath(path, 0, 0, w, h, false, false);
+        }
+        return path;
     }
 
     @Nullable

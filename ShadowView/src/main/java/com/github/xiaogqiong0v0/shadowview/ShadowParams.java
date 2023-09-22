@@ -707,12 +707,11 @@ public class ShadowParams {
         if (autoAddWidthHeight) {
             params.width += paddings.left + paddings.right;
             params.height += paddings.top + paddings.bottom;
-            paddings = new Rect();
         }
         view.setLayoutParams(params);
         if (autoAddPadding) {
-            view.setPadding(savedPaddings.left + paddings.left, savedPaddings.top + paddings.top,
-                    savedPaddings.right + paddings.right, savedPaddings.bottom + paddings.bottom);
+            view.setPadding(savedPaddings.left + currentPaddings.left, savedPaddings.top + currentPaddings.top,
+                    savedPaddings.right + currentPaddings.right, savedPaddings.bottom + currentPaddings.bottom);
         }
     }
 

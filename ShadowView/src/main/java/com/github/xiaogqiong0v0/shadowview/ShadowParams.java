@@ -18,12 +18,14 @@ import android.graphics.Shader;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.IntDef;
 import androidx.annotation.Nullable;
+import androidx.annotation.StyleableRes;
 
 /**
  * 包名：com.github.xiaogqiong0v0.shadowview
@@ -105,10 +107,10 @@ public class ShadowParams {
     public int shadowClip;
     @ShadowType
     public int shadowType;
-    public int boxRadiusLeftTop;
-    public int boxRadiusRightTop;
-    public int boxRadiusRightBottom;
-    public int boxRadiusLeftBottom;
+    public PwPhValue boxRadiusLeftTop;
+    public PwPhValue boxRadiusRightTop;
+    public PwPhValue boxRadiusRightBottom;
+    public PwPhValue boxRadiusLeftBottom;
     public int boxBorderThickness;
     public int boxBorderColor;
     @BorderType
@@ -200,8 +202,12 @@ public class ShadowParams {
     private Rect savedMargins;
     private Rect savedPaddings;
     private Size savedWidthHeight;
+    // 阴影边距
+    private Rect currentPaddings;
     private int currentW;
     private int currentH;
+    private int validW;
+    private int validH;
     @Nullable
     private Drawable backgroundDrawable;
 
@@ -209,7 +215,6 @@ public class ShadowParams {
         this.view = view;
         view.setWillNotDraw(false);
         Context context = view.getContext();
-        //noinspection resource
         final TypedArray attr = context.obtainStyledAttributes(attrs, R.styleable.ShadowView, defStyleAttr, 0);
         shadowColor = attr.getColor(R.styleable.ShadowView_shadow_color, Color.BLACK);
         shadowDx = attr.getDimensionPixelSize(R.styleable.ShadowView_shadow_dx, 0);
@@ -219,11 +224,11 @@ public class ShadowParams {
         shadowInset = attr.getBoolean(R.styleable.ShadowView_shadow_inset, false);
         shadowType = attr.getInt(R.styleable.ShadowView_shadow_type, SHADOW_TYPE_SOFT);
         shadowClip = attr.getInt(R.styleable.ShadowView_shadow_clip, SHADOW_CLIP_NONE);
-        final int boxRadius = attr.getDimensionPixelSize(R.styleable.ShadowView_box_radius, 0);
-        boxRadiusLeftTop = attr.getDimensionPixelSize(R.styleable.ShadowView_box_radius_left_top, boxRadius);
-        boxRadiusRightTop = attr.getDimensionPixelSize(R.styleable.ShadowView_box_radius_right_top, boxRadius);
-        boxRadiusRightBottom = attr.getDimensionPixelSize(R.styleable.ShadowView_box_radius_right_bottom, boxRadius);
-        boxRadiusLeftBottom = attr.getDimensionPixelSize(R.styleable.ShadowView_box_radius_left_bottom, boxRadius);
+        PwPhValue radiusValue = getPhPwValue(attr, R.styleable.ShadowView_box_radius);
+        boxRadiusLeftTop = getPhPwValue(attr, R.styleable.ShadowView_box_radius_left_top, radiusValue);
+        boxRadiusRightTop = getPhPwValue(attr, R.styleable.ShadowView_box_radius_right_top, radiusValue);
+        boxRadiusRightBottom = getPhPwValue(attr, R.styleable.ShadowView_box_radius_right_bottom, radiusValue);
+        boxRadiusLeftBottom = getPhPwValue(attr, R.styleable.ShadowView_box_radius_left_bottom, radiusValue);
         boxBorderThickness = attr.getDimensionPixelSize(R.styleable.ShadowView_box_border_thickness, 0);
         boxBorderColor = attr.getColor(R.styleable.ShadowView_box_border_color, Color.BLACK);
         boxBorderType = attr.getInt(R.styleable.ShadowView_box_border_type, BORDER_TYPE_SOLID);
@@ -255,10 +260,10 @@ public class ShadowParams {
         underColor = Color.TRANSPARENT;
         outClearMode = OUT_CLEAR_MODE_CLIP;
         shadowClip = SHADOW_CLIP_NONE;
-        boxRadiusLeftTop = 0;
-        boxRadiusRightTop = 0;
-        boxRadiusRightBottom = 0;
-        boxRadiusLeftBottom = 0;
+        boxRadiusLeftTop = new PwPhValue();
+        boxRadiusRightTop = new PwPhValue();
+        boxRadiusRightBottom = new PwPhValue();
+        boxRadiusLeftBottom = new PwPhValue();
         boxBorderThickness = 0;
         boxBorderColor = Color.BLACK;
         boxBorderType = BORDER_TYPE_SOLID;
@@ -382,6 +387,13 @@ public class ShadowParams {
         }
         currentW = w;
         currentH = h;
+        if (currentPaddings != null) {
+            validW = w - currentPaddings.left - currentPaddings.right;
+            validH = h - currentPaddings.top - currentPaddings.bottom;
+        } else {
+            validW = w;
+            validH = h;
+        }
         refreshParams();
         drawAble = true;
     }
@@ -655,7 +667,8 @@ public class ShadowParams {
 
     private void changeLayout() {
         layoutChanged = true;
-        Rect paddings = getPaddingRect();
+        currentPaddings = getPaddingRect();
+        Rect paddings = new Rect(currentPaddings.left, currentPaddings.top, currentPaddings.right, currentPaddings.bottom);
         ViewGroup.LayoutParams params = view.getLayoutParams();
         params.width = savedWidthHeight.getWidth();
         params.height = savedWidthHeight.getHeight();
@@ -752,10 +765,10 @@ public class ShadowParams {
             Path path, float left, float top, float right, float bottom,
             boolean clockwise, boolean lineToStart, float thickness
     ) {
-        float radiusLeftTop = Math.max(boxRadiusLeftTop + thickness, 0);
-        float radiusRightTop = Math.max(boxRadiusRightTop + thickness, 0);
-        float radiusRightBottom = Math.max(boxRadiusRightBottom + thickness, 0);
-        float radiusLeftBottom = Math.max(boxRadiusLeftBottom + thickness, 0);
+        float radiusLeftTop = Math.max(getRadiusLeftTop() + thickness, 0);
+        float radiusRightTop = Math.max(getRadiusRightTop() + thickness, 0);
+        float radiusRightBottom = Math.max(getRadiusRightBottom() + thickness, 0);
+        float radiusLeftBottom = Math.max(getRadiusLeftBottom() + thickness, 0);
         IntegerBox angleTopLeft = new IntegerBox(),
                 angleTopRight = new IntegerBox(),
                 angleRightTop = new IntegerBox(),
@@ -922,6 +935,10 @@ public class ShadowParams {
             float rectLeft, float rectTop, float rectRight, float rectBottom, float thickness,
             @ColorInt int innerColor, @ColorInt int outerColor, boolean colorToOuter) {
         // thickness 正外 负内
+        float radiusLeftTop = getRadiusLeftTop();
+        float radiusRightTop = getRadiusRightTop();
+        float radiusRightBottom = getRadiusRightBottom();
+        float radiusLeftBottom = getRadiusLeftBottom();
         if (thickness > 0) {
             obtainRadiusSplitPathAndShader(leftTopPath, rightTopPath, rightBottomPath, leftBottomPath,
                     leftPath, topPath, rightPath, bottomPath,
@@ -930,9 +947,9 @@ public class ShadowParams {
                     rectLeft - thickness, rectTop - thickness,
                     rectRight + thickness, rectBottom + thickness,
                     rectLeft, rectTop, rectRight, rectBottom,
-                    boxRadiusLeftTop + thickness, boxRadiusRightTop + thickness,
-                    boxRadiusRightBottom + thickness, boxRadiusLeftBottom + thickness,
-                    boxRadiusLeftTop, boxRadiusRightTop, boxRadiusRightBottom, boxRadiusLeftBottom,
+                    radiusLeftTop + thickness, radiusRightTop + thickness,
+                    radiusRightBottom + thickness, radiusLeftBottom + thickness,
+                    radiusLeftTop, radiusRightTop, radiusRightBottom, radiusLeftBottom,
                     innerColor, outerColor, colorToOuter);
         } else {
             thickness = -thickness;
@@ -943,9 +960,9 @@ public class ShadowParams {
                     rectLeft, rectTop, rectRight, rectBottom,
                     rectLeft + thickness, rectTop + thickness,
                     rectRight - thickness, rectBottom - thickness,
-                    boxRadiusLeftTop, boxRadiusRightTop, boxRadiusRightBottom, boxRadiusLeftBottom,
-                    boxRadiusLeftTop - thickness, boxRadiusRightTop - thickness,
-                    boxRadiusRightBottom - thickness, boxRadiusLeftBottom - thickness,
+                    radiusLeftTop, radiusRightTop, radiusRightBottom, radiusLeftBottom,
+                    radiusLeftTop - thickness, radiusRightTop - thickness,
+                    radiusRightBottom - thickness, radiusLeftBottom - thickness,
                     innerColor, outerColor, colorToOuter);
         }
     }
@@ -963,7 +980,131 @@ public class ShadowParams {
     }
 
     private boolean allRadiusZero() {
-        return boxRadiusLeftTop == 0 && boxRadiusRightTop == 0 && boxRadiusRightBottom == 0 && boxRadiusLeftBottom == 0;
+        return getRadiusLeftTop() == 0 && getRadiusRightTop() == 0 && getRadiusRightBottom() == 0 && getRadiusLeftBottom() == 0;
+    }
+
+    private PwPhValue getPhPwValue(TypedArray arr, @StyleableRes int resId) {
+        PwPhValue value = new PwPhValue();
+        int type;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            type = arr.getType(resId);
+        } else {
+            type = arr.peekValue(resId).type;
+        }
+        if (type == TypedValue.TYPE_STRING) {
+            value.percent = true;
+            String tmp = arr.getString(resId);
+            if (tmp == null || tmp.length() == 0) {
+                value.value = 0;
+            } else {
+                // 从字符串里取出数字
+                if (tmp.endsWith("pw")) {
+                    //noinspection DuplicateExpressions
+                    value.value = Integer.parseInt(tmp.substring(0, tmp.length() - 2));
+                    value.isWidth = true;
+                } else if (tmp.endsWith("ph")) {
+                    //noinspection DuplicateExpressions
+                    value.value = Integer.parseInt(tmp.substring(0, tmp.length() - 2));
+                } else {
+                    value.value = Integer.parseInt(tmp);
+                }
+            }
+        } else {
+            value.value = arr.getDimensionPixelSize(resId, 0);
+        }
+        return value;
+    }
+
+    private PwPhValue getPhPwValue(TypedArray arr, @StyleableRes int resId, PwPhValue defaultValue) {
+        PwPhValue value = new PwPhValue();
+        int type;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            type = arr.getType(resId);
+        } else {
+            type = arr.peekValue(resId).type;
+        }
+        if (type == TypedValue.TYPE_NULL) {
+            value.value = defaultValue.value;
+            value.percent = defaultValue.percent;
+            value.isWidth = defaultValue.isWidth;
+        } else if (type == TypedValue.TYPE_STRING) {
+            value.percent = true;
+            String tmp = arr.getString(resId);
+            if (tmp == null || tmp.length() == 0) {
+                value.value = 0;
+            } else {
+                // 从字符串里取出数字
+                if (tmp.endsWith("pw")) {
+                    //noinspection DuplicateExpressions
+                    value.value = Integer.parseInt(tmp.substring(0, tmp.length() - 2));
+                    value.isWidth = true;
+                } else if (tmp.endsWith("ph")) {
+                    //noinspection DuplicateExpressions
+                    value.value = Integer.parseInt(tmp.substring(0, tmp.length() - 2));
+                } else {
+                    value.value = Integer.parseInt(tmp);
+                }
+            }
+        } else {
+            value.value = arr.getDimensionPixelSize(resId, 0);
+        }
+        return value;
+    }
+
+    private float getRadiusLeftTop() {
+        if (!boxRadiusLeftTop.percent) {
+            return boxRadiusLeftTop.value;
+        }
+        if (boxRadiusLeftTop.value == 0) {
+            return 0;
+        }
+        float percent = Math.min(100f, boxRadiusLeftTop.value) / 100f;
+        if (boxRadiusLeftTop.isWidth) {
+            return validW * percent;
+        }
+        return validH * percent;
+    }
+
+    private float getRadiusRightTop() {
+        if (!boxRadiusRightTop.percent) {
+            return boxRadiusRightTop.value;
+        }
+        if (boxRadiusRightTop.value == 0) {
+            return 0;
+        }
+        float percent = Math.min(100f, boxRadiusRightTop.value) / 100f;
+        if (boxRadiusRightTop.isWidth) {
+            return validW * percent;
+        }
+        return validH * percent;
+    }
+
+    private float getRadiusRightBottom() {
+        if (!boxRadiusRightBottom.percent) {
+            return boxRadiusRightBottom.value;
+        }
+        if (boxRadiusRightBottom.value == 0) {
+            return 0;
+        }
+        float percent = Math.min(100f, boxRadiusRightBottom.value) / 100f;
+        if (boxRadiusRightBottom.isWidth) {
+            return validW * percent;
+        }
+        return validH * percent;
+    }
+
+    private float getRadiusLeftBottom() {
+        if (!boxRadiusLeftBottom.percent) {
+            return boxRadiusLeftBottom.value;
+        }
+        if (boxRadiusLeftBottom.value == 0) {
+            return 0;
+        }
+        float percent = Math.min(100f, boxRadiusLeftBottom.value) / 100f;
+        if (boxRadiusLeftBottom.isWidth) {
+            return validW * percent;
+        }
+        return validH * percent;
     }
 
     /**
@@ -1653,6 +1794,40 @@ public class ShadowParams {
 
     public interface OnDrawSuperListener {
         void onDrawSuper(Canvas canvas);
+    }
+
+    public static class PwPhValue {
+        private int value;
+        private boolean percent;
+        private boolean isWidth;
+
+        public PwPhValue() {
+
+        }
+
+        public void setValue(int value) {
+            this.value = value;
+        }
+
+        public void setPercent(boolean percent) {
+            this.percent = percent;
+        }
+
+        public int getValue() {
+            return value;
+        }
+
+        public boolean isPercent() {
+            return percent;
+        }
+
+        public boolean isWidth() {
+            return isWidth;
+        }
+
+        public void setWidth(boolean width) {
+            isWidth = width;
+        }
     }
 
     private static class Size {

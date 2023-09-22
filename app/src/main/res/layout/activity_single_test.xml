@@ -2,24 +2,39 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/test_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".SingleTestActivity"
-    android:id="@+id/test_view">
+    tools:context=".SingleTestActivity">
+
+    <com.github.xiaogqiong0v0.shadowview.ShadowFrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#00FF00"
+        app:box_radius="50"
+        app:shadow_blur="5dp"
+        app:out_clear_mode="clear">
+
+        <TextView
+            android:layout_width="200dp"
+            android:layout_height="150dp"
+            android:layout_margin="20dp"
+            android:background="#FF0000"
+            android:gravity="center"
+            android:text="ShadowFrameLayout"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp" />
+    </com.github.xiaogqiong0v0.shadowview.ShadowFrameLayout>
 
     <com.github.xiaogqiong0v0.shadowview.ShadowView
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="200dp"
+        android:layout_height="150dp"
         android:layout_margin="20dp"
         android:background="#FF0000"
         app:auto_add_padding="false"
         app:auto_add_width_height="true"
+        app:box_radius="50"
         app:shadow_blur="5dp"
         app:shadow_spread="5dp" />
-    <Button
-        android:id="@+id/test_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="测试"/>
 </LinearLayout>

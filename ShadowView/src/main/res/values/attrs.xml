@@ -22,11 +22,16 @@
         <flag name="right" value="4" />
         <flag name="bottom" value="8" />
     </attr>
-    <attr name="box_radius" format="dimension" />
-    <attr name="box_radius_left_top" format="dimension" />
-    <attr name="box_radius_right_top" format="dimension" />
-    <attr name="box_radius_right_bottom" format="dimension" />
-    <attr name="box_radius_left_bottom" format="dimension" />
+    <!--    string 100ph pw 宽高百分百 默认 ph-->
+    <attr name="box_radius" format="dimension|string" />
+    <!--    string 100ph pw 宽高百分百 默认 ph-->
+    <attr name="box_radius_left_top" format="dimension|string" />
+    <!--    string 100ph pw 宽高百分百 默认 ph-->
+    <attr name="box_radius_right_top" format="dimension|string" />
+    <!--    string 100ph pw 宽高百分百 默认 ph-->
+    <attr name="box_radius_right_bottom" format="dimension|string" />
+    <!--    string 100ph pw 宽高百分百 默认 ph-->
+    <attr name="box_radius_left_bottom" format="dimension|string" />
     <attr name="box_border_thickness" format="dimension" />
     <attr name="box_border_color" format="color" />
     <attr name="box_border_type" format="enum">

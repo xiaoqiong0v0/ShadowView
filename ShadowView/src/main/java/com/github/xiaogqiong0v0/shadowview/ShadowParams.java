@@ -164,7 +164,9 @@ public class ShadowParams {
     @Nullable
     private Shader toBottomShader;
     @Nullable
-    private Path clipPath;
+    private Path outerClipPath;
+    @Nullable
+    private Path innerClipPath;
     @Nullable
     private Path outerPath;
     @Nullable
@@ -435,6 +437,9 @@ public class ShadowParams {
             }
         }
         drawBorder(canvas);
+        if (innerClipPath != null) {
+            canvas.clipPath(innerClipPath);
+        }
     }
 
     public final void refreshParams() {
@@ -458,8 +463,9 @@ public class ShadowParams {
                 }
             }
         } else {
-            clipPath = getClipPath(currentW, currentH);
+            outerClipPath = getOuterClipPath(currentW, currentH);
         }
+        innerClipPath = getInnerClipPath(currentW, currentH);
         borderPath = getBorderPath(currentW, currentH);
         if (shadowThicknessZero) return;
         if (shadowInset) {
@@ -500,8 +506,8 @@ public class ShadowParams {
     }
 
     private void drawClipSuper(Canvas canvas, OnDrawSuperListener onDrawSuperListener) {
-        if (clipPath != null) {
-            canvas.clipPath(clipPath);
+        if (outerClipPath != null) {
+            canvas.clipPath(outerClipPath);
         }
         if (backgroundDrawable != null) {
             backgroundDrawable.draw(canvas);
@@ -1185,7 +1191,7 @@ public class ShadowParams {
     }
 
     @Nullable
-    private Path getClipPath(int w, int h) {
+    private Path getOuterClipPath(int w, int h) {
         if (shadowInset) {
             if (allRadiusZero) {
                 return null;
@@ -1218,6 +1224,34 @@ public class ShadowParams {
         }
         Path path = new Path();
         rectRadiusPath(path, innerArea);
+        return path;
+    }
+
+    @Nullable
+    private Path getInnerClipPath(int w, int h) {
+        RectF area;
+        if (shadowThicknessZero && allRadiusZero) {
+            return null;
+        }
+        if (shadowInset) {
+            area = new RectF(0, 0, w, h);
+        } else {
+            area = getInnerArea(w, h);
+        }
+        if (area == null) {
+            return null;
+        }
+        float thickness = Math.max(0, boxBorderThickness - 0.5f);
+        area.left += thickness;
+        area.top += thickness;
+        area.right -= thickness;
+        area.bottom -= thickness;
+        Path path = new Path();
+        if (allRadiusZero) {
+            rectPath(path, area, true);
+        } else {
+            rectRadiusPath(path, area, true, -thickness);
+        }
         return path;
     }
 

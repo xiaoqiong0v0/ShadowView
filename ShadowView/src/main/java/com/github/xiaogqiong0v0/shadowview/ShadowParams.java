@@ -676,8 +676,14 @@ public class ShadowParams {
         currentPaddings = getPaddingRect();
         Rect paddings = new Rect(currentPaddings.left, currentPaddings.top, currentPaddings.right, currentPaddings.bottom);
         ViewGroup.LayoutParams params = view.getLayoutParams();
-        params.width = savedWidthHeight.getWidth();
-        params.height = savedWidthHeight.getHeight();
+        boolean widthChangeAble = savedWidthHeight.getWidth() > 0;
+        boolean heightChangeAble = savedWidthHeight.getHeight() > 0;
+        if (widthChangeAble) {
+            params.width = savedWidthHeight.getWidth();
+        }
+        if (heightChangeAble) {
+            params.height = savedWidthHeight.getHeight();
+        }
         if (autoDelMargin && params instanceof ViewGroup.MarginLayoutParams) {
             ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup.MarginLayoutParams) params;
             marginLayoutParams.leftMargin = savedMargins.left;
@@ -689,30 +695,42 @@ public class ShadowParams {
                 tmp = Math.min(savedMargins.left, paddings.left);
                 marginLayoutParams.leftMargin -= tmp;
                 paddings.left -= tmp;
-                params.width += tmp;
+                if (widthChangeAble) {
+                    params.width += tmp;
+                }
             }
             if (savedMargins.top > 0) {
                 tmp = Math.min(savedMargins.top, paddings.top);
                 marginLayoutParams.topMargin -= tmp;
                 paddings.top -= tmp;
-                params.height += tmp;
+                if (heightChangeAble) {
+                    params.height += tmp;
+                }
             }
             if (savedMargins.right > 0) {
                 tmp = Math.min(savedMargins.right, paddings.right);
                 marginLayoutParams.rightMargin -= tmp;
                 paddings.right -= tmp;
-                params.width += tmp;
+                if (widthChangeAble) {
+                    params.width += tmp;
+                }
             }
             if (savedMargins.bottom > 0) {
                 tmp = Math.min(savedMargins.bottom, paddings.bottom);
                 marginLayoutParams.bottomMargin -= tmp;
                 paddings.bottom -= tmp;
-                params.height += tmp;
+                if (heightChangeAble) {
+                    params.height += tmp;
+                }
             }
         }
         if (autoAddWidthHeight) {
-            params.width += paddings.left + paddings.right;
-            params.height += paddings.top + paddings.bottom;
+            if (widthChangeAble) {
+                params.width += paddings.left + paddings.right;
+            }
+            if (heightChangeAble) {
+                params.height += paddings.top + paddings.bottom;
+            }
         }
         view.setLayoutParams(params);
         if (autoAddPadding) {

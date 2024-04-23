@@ -665,7 +665,6 @@ public class ShadowParams {
         }
         params.width = savedWidthHeight.getWidth();
         params.height = savedWidthHeight.getHeight();
-        view.setLayoutParams(params);
         if (autoAddPadding) {
             view.setPadding(savedPaddings.left, savedPaddings.top, savedPaddings.right, savedPaddings.bottom);
         }
@@ -732,7 +731,6 @@ public class ShadowParams {
                 params.height += paddings.top + paddings.bottom;
             }
         }
-        view.setLayoutParams(params);
         if (autoAddPadding) {
             view.setPadding(savedPaddings.left + currentPaddings.left, savedPaddings.top + currentPaddings.top,
                     savedPaddings.right + currentPaddings.right, savedPaddings.bottom + currentPaddings.bottom);
